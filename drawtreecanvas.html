@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        canvas {
+            border: 1px solid #000;
+        }
+    </style>
+    <title>Recursive Tree Drawing</title>
+</head>
+<body>
+    <canvas id="treeCanvas" width="800" height="600"></canvas>
+
+    <script>
+        const canvas = document.getElementById('treeCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Угол наклона веток
+        const branchAngle = Math.PI / 6;
+
+        // Рисование дерева
+        function drawTree(x, y, length, angle, depth) {
+            if (depth === 0) return;
+
+            const x2 = x + length * Math.cos(angle);
+            const y2 = y - length * Math.sin(angle);
+
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x2, y2);
+            ctx.strokeStyle = `rgb(0, ${255 - depth * 20}, 0)`;
+            ctx.lineWidth = depth;
+            ctx.stroke();
+            ctx.closePath(); // Завершение контура
+
+            drawTree(x2, y2, length * 0.7, angle + branchAngle, depth - 1);
+            drawTree(x2, y2, length * 0.7, angle - branchAngle, depth - 1);
+        }
+
+        // Запуск рисования при загрузке страницы
+        window.onload = function () {
+            const treeLength = 100;
+            const treeDepth = 8;
+
+            // Очистка канваса
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Установка начальной точки для дерева
+            const startX = canvas.width / 2;
+            const startY = canvas.height;
+
+            drawTree(startX, startY, treeLength, -Math.PI / 2, treeDepth);
+        };
+    </script>
+</body>
+</html>
